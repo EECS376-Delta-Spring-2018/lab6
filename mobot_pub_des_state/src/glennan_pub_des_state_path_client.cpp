@@ -41,6 +41,22 @@ void desStateCallback(const nav_msgs::Odometry& des_state_rcvd) {
     g_des_state_phi = convertPlanarQuat2Phi(quaternion); // cheap conversion from quaternion to heading for planar motion    
 }
 
+geometry_msgs::PoseStamped getSweepPose(){
+	//pose that sweeps the object
+    geometry_msgs::PoseStamped sweep;
+    sweep.header.frame_id = "torso";
+    sweep.pose.position.x = 0.65;
+    sweep.pose.position.y = -0.35;
+    sweep.pose.position.z = -0.3;
+    sweep.pose.orientation.x = 0.707;
+    sweep.pose.orientation.y = 0.707;
+    sweep.pose.orientation.z = 0;
+    sweep.pose.orientation.w = 0;
+    sweep.header.stamp = ros::Time::now();
+    
+    return sweep;
+}
+
 int main(int argc, char **argv) {
     ros::init(argc, argv, "append_path_client");
     ros::NodeHandle n;
@@ -74,6 +90,7 @@ int main(int argc, char **argv) {
     pose_stamped.pose = pose;
     path_srv.request.path.poses.push_back(pose_stamped);
     client.call(path_srv);
+    ros::Duration(30.0).sleep();
     
     /*pose.position.y = -0.0; //-30.0;
     pose.position.x = -0.0;   
